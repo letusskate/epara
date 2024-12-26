@@ -1,3 +1,8 @@
+ARG EPARA_BASE_PATH=/workspace
+ARG EPARA_PATH=$EPARA_BASE_PATH/epara
+ARG EPARA_GIT_LINK=https://github.com/letusskate/epara.git
+ARG EPARA_GIT_BRANCH=master
+
 ###########################################
 ## 官方镜像附带cuda和cudnn(装不了基础镜像)
 
@@ -183,7 +188,7 @@
 
 # Replace 'cuda_1180_ubuntu2004_image:latest' with the actual
 # repository:tag from the image you loaded
-FROM nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu20.04
+FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu20.04
 
 # Use bash shell in Docker for conda compatibility
 SHELL ["/bin/bash", "-c"]
@@ -231,6 +236,9 @@ WORKDIR /workspace
 
 # Default command to keep container in bash
 CMD ["/bin/bash"]
+
+# git clone
+RUN cd $EPARA_BASE_PATH && git clone $EPARA_GIT_LINK
 
 #############################
 # ### mamba提高安装库的容错率

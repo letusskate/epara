@@ -231,3 +231,56 @@ WORKDIR /workspace
 
 # Default command to keep container in bash
 CMD ["/bin/bash"]
+
+#############################
+# ### mamba提高安装库的容错率
+# # 基于你加载的本地 CUDA 镜像
+# FROM cuda_1180_ubuntu2004_image:latest
+
+# # 使用 bash 作为默认的 shell
+# SHELL ["/bin/bash", "-c"]
+
+# # 设置环境变量，避免交互式提示
+# ENV DEBIAN_FRONTEND=noninteractive
+
+# # 安装系统依赖
+# RUN apt-get update && apt-get install -y --no-install-recommends \
+#     wget \
+#     curl \
+#     bzip2 \
+#     ca-certificates \
+#     libglib2.0-0 \
+#     libxext6 \
+#     libsm6 \
+#     libxrender1 \
+#     git \
+#     && rm -rf /var/lib/apt/lists/*
+
+# # 配置 Conda 使用清华镜像源并安装 Mamba
+# RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh \
+#     && /bin/bash /tmp/miniconda.sh -b -p /opt/conda \
+#     && rm -f /tmp/miniconda.sh \
+#     && /opt/conda/bin/conda clean --all -y \
+#     && /opt/conda/bin/conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main \
+#     && /opt/conda/bin/conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free \
+#     && /opt/conda/bin/conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r \
+#     && /opt/conda/bin/conda config --set show_channel_urls yes \
+#     && /opt/conda/bin/conda install -y mamba -n base -c conda-forge
+
+# # 更新 PATH 环境变量以使用 Conda 和 Mamba
+# ENV PATH="/opt/conda/bin:${PATH}"
+
+# # 初始化 Conda 并创建 Python 环境
+# RUN conda init bash \
+#     && echo "source ~/.bashrc" >> ~/.bash_profile \
+#     && source ~/.bashrc \
+#     && mamba create -y -n pytorch_env python=3.8 \
+#     && mamba activate pytorch_env \
+#     && mamba install -y pytorch torchvision torchaudio cudatoolkit=11.8 -c pytorch -c nvidia \
+#     && conda clean --all -y
+
+# # 设置工作目录
+# WORKDIR /workspace
+
+# # 默认启动 bash
+# CMD ["/bin/bash"]

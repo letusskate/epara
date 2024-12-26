@@ -223,7 +223,7 @@ RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pk
     && conda create -y --name pytorch_env python=3.8 \
     # && conda activate pytorch_env \
     && source activate pytorch_env \
-    && conda install -y pytorch torchvision torchaudio cudatoolkit=11.8 -c pytorch -c nvidia \
+    && conda install -y pytorch torchvision torchaudio cudatoolkit=11.8 \
     && conda clean --all -y
 
 # Set a default working directory

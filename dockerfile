@@ -183,10 +183,11 @@
 
 # Replace 'cuda_1180_ubuntu2004_image:latest' with the actual
 # repository:tag from the image you loaded
-FROM cuda_1180_ubuntu2004_image:latest
+FROM nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu20.04
 
 # Use bash shell in Docker for conda compatibility
 SHELL ["/bin/bash", "-c"]
+
 
 # Update and install prerequisites (if needed)
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -202,10 +203,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/*
 
 # Install Miniconda in /usr/local/conda
-RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh \
+RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh \
     && /bin/bash /tmp/miniconda.sh -b -p /usr/local/conda \
     && rm -f /tmp/miniconda.sh \
-    && /usr/local/conda/bin/conda clean -tipsy
+    && /usr/local/conda/bin/conda clean --all -y
 
 # Update PATH so conda is directly accessible
 ENV PATH="/usr/local/conda/bin:${PATH}"
@@ -213,11 +214,17 @@ ENV PATH="/usr/local/conda/bin:${PATH}"
 # Combine conda init, environment creation, and package installs in a single RUN
 RUN conda init bash \
     && echo "source ~/.bashrc" >> ~/.bash_profile \
-    && source ~/.bashrc \
+    && source ~/.bashrc 
+
+RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/ \
+    && conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/ \
+    && conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/pytorch/ \
+    && conda config --set show_channel_urls yes \
     && conda create -y --name pytorch_env python=3.8 \
-    && conda activate pytorch_env \
+    # && conda activate pytorch_env \
+    && source activate pytorch_env \
     && conda install -y pytorch torchvision torchaudio cudatoolkit=11.8 -c pytorch -c nvidia \
-    && conda clean -tipsy
+    && conda clean --all -y
 
 # Set a default working directory
 WORKDIR /workspace

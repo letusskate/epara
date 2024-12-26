@@ -163,7 +163,7 @@
 # RUN conda create -y --name pytorch_env python=3.8
 
 # # 安装pytorch
-# RUN conda activate pytorch_env && \
+# RUN source activate pytorch_env && \
 #     conda install -y pytorch torchvision torchaudio cudatoolkit=11.8 -c pytorch -c nvidia && \
 #     conda clean -tipsy
 # # 复制当前目录内容到容器中

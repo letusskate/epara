@@ -178,67 +178,67 @@ ARG EPARA_GIT_BRANCH=master
 # CMD ["/bin/bash"]
 
 ################################
-### 本地安装（推荐）
-# Dockerfile Example
-#
-# Before building this image, make sure to load your local tar file:
-#   docker load -i ../cuda_1180_ubuntu2004_image.tar
-# This will import an image into your local Docker environment.
-# Adjust the FROM line below to match the loaded image name and tag.
+# ### 本地安装（推荐）
+# # Dockerfile Example
+# #
+# # Before building this image, make sure to load your local tar file:
+# #   docker load -i ../cuda_1180_ubuntu2004_image.tar
+# # This will import an image into your local Docker environment.
+# # Adjust the FROM line below to match the loaded image name and tag.
 
-# Replace 'cuda_1180_ubuntu2004_image:latest' with the actual
-# repository:tag from the image you loaded
-FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu20.04
+# # Replace 'cuda_1180_ubuntu2004_image:latest' with the actual
+# # repository:tag from the image you loaded
+# FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu20.04
 
-# Use bash shell in Docker for conda compatibility
-SHELL ["/bin/bash", "-c"]
+# # Use bash shell in Docker for conda compatibility
+# SHELL ["/bin/bash", "-c"]
 
 
-# Update and install prerequisites (if needed)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    wget \
-    curl \
-    bzip2 \
-    ca-certificates \
-    libglib2.0-0 \
-    libxext6 \
-    libsm6 \
-    libxrender1 \
-    git && \
-    rm -rf /var/lib/apt/lists/*
+# # Update and install prerequisites (if needed)
+# RUN apt-get update && apt-get install -y --no-install-recommends \
+#     wget \
+#     curl \
+#     bzip2 \
+#     ca-certificates \
+#     libglib2.0-0 \
+#     libxext6 \
+#     libsm6 \
+#     libxrender1 \
+#     git && \
+#     rm -rf /var/lib/apt/lists/*
 
-# Install Miniconda in /usr/local/conda
-RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh \
-    && /bin/bash /tmp/miniconda.sh -b -p /usr/local/conda \
-    && rm -f /tmp/miniconda.sh \
-    && /usr/local/conda/bin/conda clean --all -y
+# # Install Miniconda in /usr/local/conda
+# RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh \
+#     && /bin/bash /tmp/miniconda.sh -b -p /usr/local/conda \
+#     && rm -f /tmp/miniconda.sh \
+#     && /usr/local/conda/bin/conda clean --all -y
 
-# Update PATH so conda is directly accessible
-ENV PATH="/usr/local/conda/bin:${PATH}"
+# # Update PATH so conda is directly accessible
+# ENV PATH="/usr/local/conda/bin:${PATH}"
 
-# Combine conda init, environment creation, and package installs in a single RUN
-RUN conda init bash \
-    && echo "source ~/.bashrc" >> ~/.bash_profile \
-    && source ~/.bashrc 
+# # Combine conda init, environment creation, and package installs in a single RUN
+# RUN conda init bash \
+#     && echo "source ~/.bashrc" >> ~/.bash_profile \
+#     && source ~/.bashrc 
 
-RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/ \
-    && conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/ \
-    && conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/pytorch/ \
-    && conda config --set show_channel_urls yes \
-    && conda create -y --name pytorch_env python=3.8 \
-    # && conda activate pytorch_env \
-    && source activate pytorch_env \
-    && conda install -y pytorch torchvision torchaudio cudatoolkit=11.8 \
-    && conda clean --all -y
+# RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/ \
+#     && conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/ \
+#     && conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/pytorch/ \
+#     && conda config --set show_channel_urls yes \
+#     && conda create -y --name pytorch_env python=3.8 \
+#     # && conda activate pytorch_env \
+#     && source activate pytorch_env \
+#     && conda install -y pytorch torchvision torchaudio cudatoolkit=11.8 \
+#     && conda clean --all -y
 
-# Set a default working directory
-WORKDIR /workspace
+# # Set a default working directory
+# WORKDIR /workspace
 
-# Default command to keep container in bash
-CMD ["/bin/bash"]
+# # Default command to keep container in bash
+# CMD ["/bin/bash"]
 
-# git clone
-RUN cd $EPARA_BASE_PATH && git clone $EPARA_GIT_LINK
+# # git clone
+# RUN cd $EPARA_BASE_PATH && git clone $EPARA_GIT_LINK
 
 #############################
 # ### mamba提高安装库的容错率
@@ -292,3 +292,68 @@ RUN cd $EPARA_BASE_PATH && git clone $EPARA_GIT_LINK
 
 # # 默认启动 bash
 # CMD ["/bin/bash"]
+
+#############################
+### devlopment docker
+# Dockerfile Example
+#
+# Before building this image, make sure to load your local tar file:
+#   docker load -i ../cuda_1180_ubuntu2004_image.tar
+# This will import an image into your local Docker environment.
+# Adjust the FROM line below to match the loaded image name and tag.
+
+# Replace 'cuda_1180_ubuntu2004_image:latest' with the actual
+# repository:tag from the image you loaded
+FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu20.04
+
+# Use bash shell in Docker for conda compatibility
+SHELL ["/bin/bash", "-c"]
+
+
+# Update and install prerequisites (if needed)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    wget \
+    curl \
+    bzip2 \
+    ca-certificates \
+    libglib2.0-0 \
+    libxext6 \
+    libsm6 \
+    libxrender1 \
+    git && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Miniconda in /usr/local/conda
+RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh \
+    && /bin/bash /tmp/miniconda.sh -b -p /usr/local/conda \
+    && rm -f /tmp/miniconda.sh \
+    && /usr/local/conda/bin/conda clean --all -y \ 
+    # install mamba
+    && /usr/local/conda/bin/conda install -y mamba -n base -c conda-forge 
+
+# Update PATH so conda is directly accessible
+ENV PATH="/usr/local/conda/bin:${PATH}"
+
+# Combine conda init, environment creation, and package installs in a single RUN
+RUN conda init bash \
+    && echo "source ~/.bashrc" >> ~/.bash_profile \
+    && source ~/.bashrc 
+
+RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/ \
+    && conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/ \
+    && conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/pytorch/ \
+    && conda config --set show_channel_urls yes \
+    && mamba create -y --name pytorch_env python=3.8 \
+    # && conda activate pytorch_env \
+    && mamba activate pytorch_env \
+    && mamba install -y pytorch torchvision torchaudio cudatoolkit=11.8 \
+    && conda clean --all -y
+
+# Set a default working directory
+WORKDIR /workspace
+
+# Default command to keep container in bash
+CMD ["/bin/bash"]
+
+# git clone
+RUN cd $EPARA_BASE_PATH && git clone $EPARA_GIT_LINK
